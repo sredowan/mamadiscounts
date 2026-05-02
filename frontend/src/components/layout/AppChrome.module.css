@@ -1,0 +1,29 @@
+/* ============================================================
+   APP CHROME — Sidebar + Main Content Layout
+   ============================================================ */
+
+/* Mobile: simple stacked layout */
+.appLayout {
+  display: flex;
+}
+
+.mainColumn {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Desktop: sidebar fixed, main content scrolls */
+@media (min-width: 1024px) {
+  .appLayout {
+    height: calc(100vh - var(--header-height, 100px));
+    overflow: hidden;
+  }
+
+  .mainColumn {
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+}

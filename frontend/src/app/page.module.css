@@ -1,0 +1,289 @@
+/* ============ HERO CAMPAIGN WRAPPER ============ */
+.heroCampaignWrapper {
+  width: 100%;
+}
+
+
+/* ============ PRIMARY ACTION SECTION ============ */
+.primaryActionSection {
+  background: var(--color-white);
+  padding: var(--space-4) 0;
+}
+
+.actionGrid {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.actionItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+}
+
+.actionIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  transition: transform var(--transition-base);
+}
+
+.actionItem:hover .actionIcon {
+  transform: scale(1.05);
+}
+
+.actionIconPrimary {
+  background: #fff0f0;
+  color: #e53e3e;
+}
+
+.actionIconSecondary {
+  background: #f0f4ff;
+  color: #3182ce;
+}
+
+.actionIconTertiary {
+  background: #fffff0;
+  color: #d69e2e;
+}
+
+.actionLabel {
+  font-size: 10px;
+  font-weight: var(--weight-bold);
+  color: var(--color-gray-800);
+  text-align: center;
+  max-width: 80px;
+  line-height: 1.2;
+}
+
+/* ============ SCROLLABLE CATEGORIES ============ */
+.scrollableCategories {
+  background: var(--color-white);
+  padding: var(--space-6) 0;
+}
+
+/* Hide on desktop — sidebar handles categories there */
+.mobileOnly {
+  display: block;
+}
+
+@media (min-width: 1024px) {
+  .mobileOnly {
+    display: none;
+  }
+}
+
+.categoryScrollWrap {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding: var(--space-2) 0;
+  margin: 0 calc(var(--space-4) * -1);
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+}
+
+.categoryScrollWrap::-webkit-scrollbar {
+  display: none;
+}
+
+.categoryItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 0 0 80px; /* Fixed width for horizontal scrolling */
+  text-decoration: none;
+  scroll-snap-align: start;
+}
+
+.categorySquare {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-xl);
+  background: var(--color-white);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: transform var(--transition-base);
+}
+
+.categoryItem:hover .categorySquare {
+  transform: translateY(-2px);
+}
+
+.categoryName {
+  font-size: 10px;
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* ============ PROMO BANNERS ============ */
+.promoSection {
+  background: var(--color-white);
+  padding: var(--space-4) 0 var(--space-6) 0;
+}
+
+.promoScrollWrap {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  padding: var(--space-2) 0;
+  margin: 0 calc(var(--space-4) * -1);
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+}
+
+.promoScrollWrap::-webkit-scrollbar {
+  display: none;
+}
+
+.promoBanner {
+  flex: 0 0 280px; /* Large horizontal card */
+  min-height: 160px;
+  scroll-snap-align: start;
+  text-decoration: none;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  position: relative;
+  background: var(--color-gray-100);
+  transition: transform var(--transition-base);
+}
+
+.promoBanner:hover {
+  transform: translateY(-2px);
+}
+
+.promoContent {
+  padding: var(--space-6);
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: var(--space-2);
+}
+
+.promoVoucher {
+  background: linear-gradient(135deg, #10b981, #059669); /* Teal/Green */
+}
+
+.promoCashless {
+  background: linear-gradient(135deg, #f97316, #ea580c); /* Orange */
+}
+
+.promoExclusive {
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9); /* Purple */
+}
+
+.promoBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px 8px;
+  background: var(--color-white);
+  color: var(--color-gray-900);
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: var(--weight-extrabold);
+  width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-2);
+}
+
+.promoTitle {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-extrabold);
+  color: var(--color-white);
+  margin: 0;
+  line-height: 1.1;
+}
+
+.promoDesc {
+  font-size: var(--text-xs);
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: auto;
+}
+
+/* ============ PAID MERCHANT PROMOTIONS ============ */
+.mainPromotionSection {
+  background: linear-gradient(180deg, var(--color-white), var(--color-gray-50));
+  padding: var(--space-5) 0 var(--space-3);
+}
+
+.mainPromotionGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .mainPromotionGrid {
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  }
+}
+
+.mainPromotionCard {
+  position: relative;
+  display: block;
+  min-height: 220px;
+  overflow: hidden;
+  border-radius: 28px;
+  background: var(--color-gray-100);
+  box-shadow: 0 18px 48px -28px rgba(15, 23, 42, 0.55);
+  text-decoration: none;
+}
+
+.mainPromotionImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+  object-fit: cover;
+  transition: transform var(--transition-base);
+}
+
+.mainPromotionCard:hover .mainPromotionImage,
+.promoBanner:hover .promoImageOnly {
+  transform: scale(1.03);
+}
+
+.promoImageOnly {
+  display: block;
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  transition: transform var(--transition-base);
+}
+
+.promotionOverlayBadge {
+  position: absolute;
+  left: var(--space-4);
+  top: var(--space-4);
+  display: inline-flex;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--color-gray-900);
+  font-size: 11px;
+  font-weight: var(--weight-extrabold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: 0 8px 22px -14px rgba(15, 23, 42, 0.7);
+}

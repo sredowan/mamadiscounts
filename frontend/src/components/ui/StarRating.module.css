@@ -1,0 +1,32 @@
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.filled {
+  color: var(--color-gold);
+  fill: var(--color-gold);
+}
+
+.empty {
+  color: var(--color-gray-300);
+  fill: none;
+}
+
+.value {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+
+.count {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}

@@ -1,0 +1,362 @@
+/* ============================================================
+   COUPONUS BD — Ultra Premium Voucher Template Styles
+   10 variations, fluid 7:4 cards for homepage voucher slots
+   ============================================================ */
+
+/* ── Base wrapper ──────────────────────────────────────────── */
+.voucherWrap {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  aspect-ratio: 7 / 4;
+  min-height: 160px;
+  overflow: hidden;
+  font-family: var(--font-heading);
+  color: var(--color-white);
+  border-radius: var(--radius-2xl);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  transform: translateZ(0); /* Force hardware acceleration */
+}
+
+.bgImage {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+  transition: transform 10s ease;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4);
+}
+
+/* Logo */
+.logoArea {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-1);
+}
+
+.shopLogo {
+  height: 30px;
+  width: auto;
+  max-width: 112px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.15);
+  padding: 4px 10px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.shopNameFallback {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 4px 14px;
+  border-radius: var(--radius-full);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+/* Center */
+.centerArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--space-2);
+}
+
+.discountBadge {
+  font-family: var(--font-heading);
+  font-size: clamp(2.25rem, 13vw, 3.5rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.headline {
+  font-size: var(--text-lg);
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  letter-spacing: -0.01em;
+}
+
+.subtext {
+  font-size: var(--text-xs);
+  opacity: 0.95;
+  font-weight: 500;
+  margin: 0;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  max-width: 90%;
+}
+
+/* Tear line */
+.tearLine {
+  display: none;
+}
+
+/* Branding */
+.brandingArea {
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+}
+
+.watermark {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  opacity: 0.5;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+/* ============================================================
+   V1 — Frosted Ticket
+   ============================================================ */
+.classicVoucher {
+  border: 1px solid rgba(255,255,255,0.4);
+}
+
+.classicVoucher .overlay {
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.classicVoucher .tearLine {
+  display: block;
+  border-top: 2px dashed rgba(255,255,255,0.3);
+  margin: var(--space-2) calc(var(--space-4) * -1);
+}
+
+/* ============================================================
+   V2 — Emerald Card
+   ============================================================ */
+.emeraldPass .overlay {
+  background: radial-gradient(circle at 50% 0%, rgba(5, 150, 105, 0.95) 0%, rgba(6, 78, 59, 0.98) 100%);
+}
+
+.emeraldPass .discountBadge {
+  color: #a7f3d0;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+/* ============================================================
+   V3 — Golden Ticket
+   ============================================================ */
+.goldCard .overlay {
+  background: linear-gradient(135deg, #fef08a 0%, #d97706 50%, #78350f 100%);
+}
+
+.goldCard .centerArea {
+  color: #450a0a;
+}
+
+.goldCard .discountBadge {
+  color: #fffbeb;
+  text-shadow: 0 4px 12px rgba(120, 53, 15, 0.6);
+}
+
+.goldCard .headline,
+.goldCard .subtext {
+  text-shadow: none;
+}
+
+.goldCard .watermark {
+  color: #78350f;
+  text-shadow: none;
+}
+
+.goldCard .shopLogo,
+.goldCard .shopNameFallback {
+  background: rgba(0,0,0,0.1);
+  border-color: rgba(255,255,255,0.3);
+  color: #450a0a;
+}
+
+/* ============================================================
+   V4 — Obsidian Chit
+   ============================================================ */
+.minimalChit {
+  background: #0f172a;
+}
+
+.minimalChit .overlay {
+  background: radial-gradient(circle at 100% 100%, rgba(51, 65, 85, 0.8) 0%, transparent 100%);
+}
+
+.minimalChit .discountBadge {
+  background: linear-gradient(to right, #cbd5e1, #f8fafc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+}
+
+/* ============================================================
+   V5 — Ivory Split
+   ============================================================ */
+.photoTop .overlay {
+  background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.1) 45%, rgba(250,250,250,1) 45.1%, rgba(250,250,250,1) 100%);
+}
+
+.photoTop .centerArea {
+  justify-content: flex-end;
+  color: #1c1917;
+}
+
+.photoTop .discountBadge {
+  color: #0f172a;
+  text-shadow: none;
+}
+
+.photoTop .headline,
+.photoTop .subtext {
+  text-shadow: none;
+}
+
+.photoTop .watermark {
+  color: #a8a29e;
+  text-shadow: none;
+}
+
+.photoTop .logoArea {
+  margin-top: -10px;
+}
+
+/* ============================================================
+   V6 — Crimson Seal
+   ============================================================ */
+.circularBadge .overlay {
+  background: linear-gradient(135deg, rgba(153, 27, 27, 0.98) 0%, rgba(69, 10, 10, 0.98) 100%);
+}
+
+.circularBadge .discountBadge {
+  width: min(120px, 36vw);
+  height: min(120px, 36vw);
+  border-radius: 50%;
+  background: var(--color-white);
+  color: #991b1b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1.75rem, 9vw, 2.5rem);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4), inset 0 2px 4px rgba(0,0,0,0.1);
+  text-shadow: none;
+}
+
+/* ============================================================
+   V7 — Violet Pass
+   ============================================================ */
+.ticketStyle .overlay {
+  background: linear-gradient(135deg, rgba(109, 40, 217, 0.95), rgba(76, 29, 149, 0.98));
+}
+
+.ticketStyle .tearLine {
+  display: block;
+  border-top: 2px dashed rgba(255,255,255,0.4);
+  margin: var(--space-2) calc(var(--space-4) * -1);
+  position: relative;
+}
+
+.ticketStyle .tearLine::before,
+.ticketStyle .tearLine::after {
+  content: "";
+  position: absolute;
+  top: -12px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-white);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.ticketStyle .tearLine::before { left: -12px; }
+.ticketStyle .tearLine::after  { right: -12px; }
+
+.ticketStyle .discountBadge {
+  color: #e9d5ff;
+}
+
+/* ============================================================
+   V8 — Sapphire Stack
+   ============================================================ */
+.gradientStack .overlay {
+  background: linear-gradient(180deg, rgba(3, 105, 161, 0.95) 0%, rgba(8, 47, 73, 0.95) 100%);
+}
+
+.gradientStack .centerArea {
+  gap: var(--space-3);
+}
+
+.gradientStack .discountBadge {
+  background: rgba(255,255,255,0.1);
+  padding: var(--space-2) var(--space-6);
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+/* ============================================================
+   V9 — Onyx Exclusive
+   ============================================================ */
+.darkExclusive .overlay {
+  background: radial-gradient(ellipse at center, rgba(39, 39, 42, 0.95) 0%, rgba(9, 9, 11, 0.98) 100%);
+}
+
+.darkExclusive .discountBadge {
+  color: #fde047;
+  font-weight: 300;
+  letter-spacing: -0.05em;
+}
+
+.darkExclusive .watermark {
+  color: #fde047;
+  opacity: 0.6;
+}
+
+/* ============================================================
+   V10 — Amber Glow
+   ============================================================ */
+.festiveGift .overlay {
+  background: radial-gradient(circle at top right, rgba(245, 158, 11, 0.9) 0%, rgba(180, 83, 9, 0.95) 100%);
+}
+
+.festiveGift .discountBadge {
+  background: rgba(255,255,255,0.95);
+  color: #b45309;
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-full);
+  font-size: clamp(2rem, 10vw, 2.8rem);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  text-shadow: none;
+}
+
+.festiveGift .headline {
+  color: #fef3c7;
+}

@@ -1,0 +1,43 @@
+.wrapper {
+  background: var(--color-white);
+  padding: var(--space-6) 0;
+}
+
+.subtitle {
+  font-size: var(--text-sm);
+  color: var(--color-gray-500);
+  margin-top: var(--space-1);
+}
+
+.scrollContainer {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  padding: var(--space-2) 0 var(--space-4) 0;
+  margin: 0 calc(var(--space-4) * -1); /* Negative margin to allow full-bleed scroll */
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+}
+
+.scrollContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.cardWrapper {
+  flex: 0 0 280px; /* Fixed width for horizontal scrolling cards */
+  scroll-snap-align: start;
+}
+
+@media (min-width: 768px) {
+  .scrollContainer {
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .cardWrapper {
+    flex: 0 0 320px;
+  }
+}

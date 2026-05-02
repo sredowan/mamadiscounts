@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+.pnp.*
+
+# Build output
+frontend/.next/
+frontend/out/
+backend/dist/
+
+# Environment
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+dev.log
+dev.err.log
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Prisma
+backend/prisma/migrations/
+
+# Scratch/temp
+scratch/
+frontend/scratch/

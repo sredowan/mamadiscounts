@@ -1,0 +1,176 @@
+/**
+ * Couponus BD — Checkout Field Styles
+ */
+
+.couponus-checkout-field {
+  margin-bottom: 24px;
+}
+
+.couponus-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-left: 4px solid #10b981;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.couponus-toggle:hover {
+  background: #ecfdf5;
+  border-color: #86efac;
+}
+
+.couponus-toggle-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.couponus-toggle-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #065f46;
+  flex: 1;
+}
+
+.couponus-toggle-arrow {
+  font-size: 12px;
+  color: #6ee7b7;
+  transition: transform 0.2s;
+}
+
+.couponus-form {
+  padding: 16px 0 0;
+}
+
+.couponus-input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.couponus-code-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: monospace;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.couponus-code-input:focus {
+  border-color: var(--brand-color, #10b981);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.couponus-code-input:disabled {
+  opacity: 0.6;
+  background: #f9fafb;
+}
+
+.couponus-apply-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.couponus-apply-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.couponus-apply-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.couponus-message {
+  margin-top: 10px;
+}
+
+.couponus-msg-success {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #065f46;
+  background: #ecfdf5;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #a7f3d0;
+}
+
+.couponus-msg-error {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #991b1b;
+  background: #fef2f2;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+}
+
+.couponus-applied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding: 14px 16px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+}
+
+.couponus-applied-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.couponus-applied-icon {
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.couponus-applied-title {
+  display: block;
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.couponus-applied-discount {
+  display: block;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.couponus-remove-btn {
+  padding: 6px 14px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fff;
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.couponus-remove-btn:hover {
+  background: #fef2f2;
+}

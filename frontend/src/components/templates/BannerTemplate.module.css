@@ -1,0 +1,361 @@
+/* ============================================================
+   COUPONUS BD — Ultra Premium Banner Template Styles
+   10 variations, all matching slider dimensions (300px → 450px)
+   ============================================================ */
+
+/* ── Base wrapper ──────────────────────────────────────────── */
+.bannerWrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  overflow: hidden;
+  font-family: var(--font-heading);
+  color: var(--color-white);
+}
+
+/* Background product image */
+.bgImage {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+  transition: transform 10s ease; /* Subtle premium movement if animated */
+}
+
+/* Overlay (customized per template) */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* Content layer */
+.content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--space-6) var(--space-8);
+}
+
+@media (min-width: 768px) {
+  .content { padding: var(--space-10) var(--space-12); }
+}
+
+/* Shop logo */
+.logoArea {
+  display: flex;
+  align-items: center;
+}
+
+.shopLogo {
+  height: 40px;
+  width: auto;
+  max-width: 140px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 6px 12px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) { .shopLogo { height: 50px; max-width: 180px; } }
+
+.shopNameFallback {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.05em;
+}
+
+/* Text area */
+.textArea {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 500px;
+}
+
+.discountBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-family: var(--font-heading);
+  font-size: 3.5rem;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 768px) { .discountBadge { font-size: 5rem; } }
+
+.headline {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  letter-spacing: -0.01em;
+}
+
+@media (min-width: 768px) { .headline { font-size: var(--text-4xl); } }
+
+.subtext {
+  font-size: var(--text-base);
+  opacity: 0.95;
+  font-weight: 500;
+  margin: 0;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  max-width: 80%;
+  line-height: 1.4;
+}
+
+@media (min-width: 768px) { .subtext { font-size: var(--text-lg); } }
+
+/* Watermark */
+.watermark {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  opacity: 0.4;
+  align-self: flex-end;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+/* ============================================================
+   B1 — Premium Emerald
+   ============================================================ */
+.emeraldBold .overlay {
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.95) 0%, rgba(4, 120, 87, 0.7) 60%, transparent 100%);
+  backdrop-filter: blur(2px);
+}
+
+.emeraldBold .discountBadge {
+  color: #a7f3d0;
+}
+
+/* ============================================================
+   B2 — Rose Gold Luxury
+   ============================================================ */
+.sunsetDiagonal .overlay {
+  background: linear-gradient(120deg, rgba(159, 18, 57, 0.95) 0%, rgba(225, 29, 72, 0.8) 50%, rgba(253, 164, 175, 0.4) 100%);
+  backdrop-filter: blur(4px);
+}
+
+.sunsetDiagonal .discountBadge {
+  color: #ffe4e6;
+  text-shadow: 0 4px 16px rgba(159, 18, 57, 0.6);
+}
+
+.sunsetDiagonal .headline {
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================================
+   B3 — Midnight Luxe
+   ============================================================ */
+.darkPremium .overlay {
+  background: radial-gradient(circle at 30% 50%, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 0.85) 100%);
+}
+
+.darkPremium .discountBadge {
+  background: linear-gradient(to right, #fbbf24, #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+}
+
+.darkPremium .headline {
+  color: #f8fafc;
+}
+
+.darkPremium .subtext {
+  color: #cbd5e1;
+}
+
+.darkPremium .watermark {
+  color: #fbbf24;
+  opacity: 0.6;
+}
+
+/* ============================================================
+   B4 — Ocean Glass
+   ============================================================ */
+.tealWaves .overlay {
+  background: linear-gradient(160deg, rgba(13, 148, 136, 0.85) 0%, rgba(8, 145, 178, 0.7) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.tealWaves .textArea {
+  background: rgba(255, 255, 255, 0.05);
+  padding: var(--space-5) var(--space-6);
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.tealWaves .discountBadge {
+  font-weight: 800;
+}
+
+/* ============================================================
+   B5 — Platinum Split
+   ============================================================ */
+.splitDuo .overlay {
+  background: linear-gradient(to right, transparent 0%, transparent 35%, rgba(15, 23, 42, 0.98) 35.1%, rgba(30, 41, 59, 0.98) 100%);
+}
+
+.splitDuo .textArea {
+  align-self: flex-end;
+  text-align: right;
+}
+
+.splitDuo .discountBadge {
+  align-self: flex-end;
+  color: #e2e8f0;
+}
+
+.splitDuo .headline {
+  color: #f8fafc;
+}
+
+/* ============================================================
+   B6 — Pearl Minimal
+   ============================================================ */
+.minimalWhite {
+  color: var(--color-gray-900);
+}
+
+.minimalWhite .overlay {
+  background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.85) 100%);
+  backdrop-filter: blur(8px);
+}
+
+.minimalWhite .discountBadge {
+  color: #0f172a;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.minimalWhite .headline {
+  color: #1e293b;
+  text-shadow: none;
+}
+
+.minimalWhite .subtext {
+  color: #475569;
+  text-shadow: none;
+}
+
+.minimalWhite .shopLogo,
+.minimalWhite .shopNameFallback {
+  background: rgba(0,0,0,0.03);
+  border-color: rgba(0,0,0,0.1);
+  color: #0f172a;
+}
+
+.minimalWhite .watermark {
+  color: #94a3b8;
+  text-shadow: none;
+}
+
+/* ============================================================
+   B7 — Amethyst Glow
+   ============================================================ */
+.gradientBurst .overlay {
+  background: radial-gradient(circle at top left, rgba(124, 58, 237, 0.95) 0%, rgba(88, 28, 135, 0.8) 50%, rgba(30, 27, 75, 0.95) 100%);
+}
+
+.gradientBurst .discountBadge {
+  color: #ddd6fe;
+  font-weight: 300;
+  letter-spacing: -0.05em;
+}
+
+.gradientBurst .headline {
+  font-weight: 900;
+}
+
+/* ============================================================
+   B8 — Cyber Chrome
+   ============================================================ */
+.neonPop .overlay {
+  background: rgba(15, 23, 42, 0.85);
+  background-image: radial-gradient(rgba(14, 165, 233, 0.2) 2px, transparent 2px);
+  background-size: 24px 24px;
+}
+
+.neonPop .discountBadge {
+  background: linear-gradient(135deg, #22d3ee, #0284c7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 0 12px rgba(14, 165, 233, 0.6));
+}
+
+.neonPop .headline {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ============================================================
+   B9 — Cinematic Vignette
+   ============================================================ */
+.photoFocus .overlay {
+  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.8) 100%);
+}
+
+.photoFocus .content {
+  justify-content: flex-end;
+}
+
+.photoFocus .logoArea {
+  position: absolute;
+  top: var(--space-6);
+  left: var(--space-8);
+}
+
+.photoFocus .discountBadge {
+  font-size: 4rem;
+}
+
+/* ============================================================
+   B10 — Royal Crimson
+   ============================================================ */
+.festive .overlay {
+  background: radial-gradient(ellipse at bottom right, rgba(153, 27, 27, 0.9) 0%, rgba(69, 10, 10, 0.95) 100%);
+}
+
+.festive .discountBadge {
+  background: linear-gradient(135deg, #fef08a, #d97706);
+  color: #450a0a;
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-2xl);
+  font-size: 3rem;
+  text-shadow: none;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.4);
+}
+
+@media (min-width: 768px) { .festive .discountBadge { font-size: 4rem; } }
+
+.festive .headline {
+  margin-top: var(--space-3);
+  color: #fef08a;
+}
