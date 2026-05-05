@@ -32,12 +32,24 @@ function getAuthSession() {
   const session = localStorage.getItem("couponus_user");
   if (session) {
     try {
-      return JSON.parse(session);
+      const user = JSON.parse(session) as MerchantUser;
+      return user.role === "MERCHANT" ? user : null;
     } catch {
       return null;
     }
   }
   return null;
+}
+
+function getCurrentUserRole() {
+  if (typeof window === "undefined") return null;
+  const session = localStorage.getItem("couponus_user");
+  if (!session) return null;
+  try {
+    return (JSON.parse(session) as MerchantUser).role || null;
+  } catch {
+    return null;
+  }
 }
 
 const NAV_SECTIONS = [
@@ -166,7 +178,8 @@ export function MerchantShell({ children }: { children: React.ReactNode }) {
     queueMicrotask(() => {
       const session = getAuthSession();
       if (!session) {
-        router.push("/merchant/login");
+        const role = getCurrentUserRole();
+        router.push(role === "ADMIN" ? "/admin/dashboard" : "/merchant/login");
       } else {
         setUser(session);
       }

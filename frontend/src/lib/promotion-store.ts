@@ -47,7 +47,11 @@ export const PROMOTION_STORE_CHANGED = "couponus-promotions-changed";
 
 export const SLOT_CAPACITY = {
   main_banner: 5,
-  sponsored_voucher: 3,
+  sponsored_voucher: 4,
+};
+
+type LegacyPromotion = Partial<MerchantPromotion> & {
+  slots?: Array<{ slotId?: TimeSlotTier; date?: string }>;
 };
 
 export const TIME_SLOT_TIERS: Record<TimeSlotTier, SlotDefinition> = {
@@ -97,28 +101,32 @@ function emitChange() {
 export function getPromotions(): MerchantPromotion[] {
   if (!canUseStorage()) return [];
   try {
-    const data = JSON.parse(localStorage.getItem(PROMOTIONS_KEY) || "[]");
-    return data.map((promo: any) => {
+    const data = JSON.parse(localStorage.getItem(PROMOTIONS_KEY) || "[]") as LegacyPromotion[];
+    return data.map((promo) => {
       // Migration for old data that used 'slots' array
       let slotTiers = promo.slotTiers;
       let slotDate = promo.slotDate;
       
       if (!slotTiers) {
-        slotTiers = promo.slots ? promo.slots.map((s: any) => s.slotId) : [];
+        slotTiers = promo.slots ? promo.slots.map((slot) => slot.slotId).filter(isTimeSlotTier) : [];
       }
       if (!slotDate) {
-        slotDate = promo.slots && promo.slots.length > 0 ? promo.slots[0].date : "";
+        slotDate = promo.slots && promo.slots.length > 0 ? promo.slots[0].date || "" : "";
       }
       
       return {
         ...promo,
         slotTiers,
         slotDate,
-      };
+      } as MerchantPromotion;
     });
   } catch {
     return [];
   }
+}
+
+function isTimeSlotTier(value: unknown): value is TimeSlotTier {
+  return value === "morning" || value === "afternoon" || value === "prime" || value === "late_night";
 }
 
 export function savePromotions(promotions: MerchantPromotion[]) {

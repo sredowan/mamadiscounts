@@ -26,8 +26,10 @@ export default function MerchantSettingsPage() {
   const [brandSaved, setBrandSaved] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem("cpb_merchant_brand_color");
-    if (saved) setBrandColor(saved);
+    Promise.resolve().then(() => {
+      const saved = localStorage.getItem("cpb_merchant_brand_color");
+      if (saved) setBrandColor(saved);
+    });
   }, []);
 
   function toggleNotif(index: number) {

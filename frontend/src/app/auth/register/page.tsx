@@ -75,7 +75,7 @@ export default function RegisterPage() {
 
         <p className={styles.switchAuth}>
           Already have an account?{" "}
-          <Link href="/auth/login" className={styles.switchLink}>Sign In</Link>
+          <Link href="/customer/login" className={styles.switchLink}>Sign In</Link>
         </p>
       </div>
     </div>

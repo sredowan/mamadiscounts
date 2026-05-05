@@ -15,30 +15,32 @@ import { analyticsRouter } from "./routes/analytics.js";
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// ── Security Middleware ────────────────────────────────
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "https://tokenized.sandbox.bka.sh"],
-    },
-  },
-  crossOriginEmbedderPolicy: false,
-}));
+function isAllowedDevOrigin(origin: string) {
+  try {
+    const { hostname } = new URL(origin);
+    return (
+      hostname === "localhost" ||
+      hostname === "127.0.0.1" ||
+      hostname === "::1" ||
+      hostname.startsWith("192.168.") ||
+      hostname.startsWith("10.") ||
+      /^172\.(1[6-9]|2\d|3[0-1])\./.test(hostname)
+    );
+  } catch {
+    return false;
+  }
+}
 
+// ── CORS — must come first so preflight OPTIONS are handled ─
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
-    // Allow localhost and local network IPs (192.168.*.*)
+    // Allow local development and private network URLs.
     if (
       origin === process.env.FRONTEND_URL || 
-      origin.startsWith("http://localhost:") || 
-      origin.startsWith("http://192.168.")
+      isAllowedDevOrigin(origin)
     ) {
       return callback(null, true);
     }
@@ -47,8 +49,15 @@ app.use(cors({
     return callback(new Error("Not allowed by CORS"));
   },
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
+// ── Security Middleware ────────────────────────────────
+app.use(helmet({
+  contentSecurityPolicy: false, // This is an API server, not serving HTML pages
+  crossOriginEmbedderPolicy: false,
+  crossOriginResourcePolicy: false, // Allow cross-origin fetch from frontend
 }));
 
 // Rate limiting — general
@@ -63,7 +72,7 @@ const generalLimiter = rateLimit({
 // Rate limiting — auth (stricter)
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: 1000,
   message: { error: "Too many login attempts, please try again later." },
 });
 

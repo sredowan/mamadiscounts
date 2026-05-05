@@ -65,7 +65,7 @@ export const SLOT_PRICES: Record<PromotionSlotTier, Record<PromotionPlacement, n
 
 export const SLOT_CAPACITY: Record<PromotionPlacement, number> = {
   MAIN_BANNER: 5,
-  SPONSORED_VOUCHER: 3,
+  SPONSORED_VOUCHER: 4,
 };
 
 function getToken(): string | null {

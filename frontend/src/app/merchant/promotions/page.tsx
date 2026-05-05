@@ -2,7 +2,7 @@
 
 import { ChangeEvent, FormEvent, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { CalendarClock, Edit3, ImagePlus, Megaphone, Plus, ReceiptText, Sparkles, Trash2, X } from "lucide-react";
+import { CalendarClock, Edit3, ImagePlus, Megaphone, ReceiptText, Sparkles, Trash2, X } from "lucide-react";
 import { getMarketplaceDeals } from "@/lib/deal-store";
 import {
   createPromotion,
@@ -21,6 +21,7 @@ import {
   type SlotAvailability,
 } from "@/lib/promotion-api";
 import { getPromotionImageSizeLabel, normalizePromotionImage } from "@/lib/promotion-image";
+import type { PromotionPlacement as ImagePromotionPlacement } from "@/lib/promotion-store";
 import { formatBDT, slugify } from "@/lib/utils";
 import type { Deal } from "@/types";
 import styles from "../merchant.module.css";
@@ -87,7 +88,7 @@ export default function MerchantPromotionsPage() {
     fetchSlots();
   }, [selectedDate, placement]);
 
-  useEffect(() => { refresh(); }, [refresh]);
+  useEffect(() => { Promise.resolve().then(refresh); }, [refresh]);
 
   const price = selectedTiers.reduce((sum, tier) => sum + SLOT_PRICES[tier][placement], 0);
 
@@ -95,10 +96,10 @@ export default function MerchantPromotionsPage() {
     const file = event.target.files?.[0];
     if (!file) return;
     try {
-      const placementKey = placement === "MAIN_BANNER" ? "main_banner" : "sponsored_voucher";
+      const placementKey: ImagePromotionPlacement = placement === "MAIN_BANNER" ? "main_banner" : "sponsored_voucher";
       setMessage("Preparing image for the selected promotion slot...");
-      setImageUrl(await normalizePromotionImage(file, placementKey as any));
-      setMessage(`Image fitted to ${getPromotionImageSizeLabel(placementKey as any)}.`);
+      setImageUrl(await normalizePromotionImage(file, placementKey));
+      setMessage(`Image fitted to ${getPromotionImageSizeLabel(placementKey)}.`);
     } catch {
       setMessage("Could not process this image. Try another image file.");
     }
@@ -222,7 +223,7 @@ export default function MerchantPromotionsPage() {
         </div>
         <div className={styles.heroPanel}>
           <p className={styles.heroPanelLabel}>Capacity</p>
-          <p className={styles.heroPanelValue}>5/3</p>
+          <p className={styles.heroPanelValue}>{SLOT_CAPACITY.MAIN_BANNER}/{SLOT_CAPACITY.SPONSORED_VOUCHER}</p>
           <p className={styles.heroPanelMeta}><CalendarClock size={11} /> banner / voucher slots</p>
         </div>
       </section>
@@ -255,7 +256,7 @@ export default function MerchantPromotionsPage() {
                 <span className={styles.templateIcon}><Sparkles size={20} /></span>
                 <strong>Promoted Voucher</strong>
                 <span className={styles.itemMeta}>Image-only sponsored voucher card during booked BD slots.</span>
-                <span className={styles.successBadge}>3 max per slot</span>
+                <span className={styles.successBadge}>{SLOT_CAPACITY.SPONSORED_VOUCHER} max per slot</span>
               </button>
             </div>
 

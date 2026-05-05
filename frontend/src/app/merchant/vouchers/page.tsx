@@ -86,8 +86,10 @@ export default function MerchantVouchersPage() {
 
   // Load created vouchers from localStorage on mount
   useEffect(() => {
-    const created = loadCreatedVouchers();
-    setAllVouchers([...created, ...DEMO_VOUCHERS]);
+    Promise.resolve().then(() => {
+      const created = loadCreatedVouchers();
+      setAllVouchers([...created, ...DEMO_VOUCHERS]);
+    });
   }, []);
 
   // ── OTP input handler ──

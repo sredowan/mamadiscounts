@@ -28,6 +28,7 @@
 
 .cardWrapper {
   flex: 0 0 280px; /* Fixed width for horizontal scrolling cards */
+  display: flex;
   scroll-snap-align: start;
 }
 
@@ -39,5 +40,11 @@
   }
   .cardWrapper {
     flex: 0 0 320px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cardWrapper {
+    flex-basis: calc((100% - (var(--space-4) * 3)) / 4);
   }
 }

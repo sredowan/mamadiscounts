@@ -33,7 +33,7 @@ function useLivePromotions(placement: "MAIN_BANNER" | "SPONSORED_VOUCHER") {
   }, [placement]);
 
   useEffect(() => {
-    refresh();
+    Promise.resolve().then(refresh);
     // Also listen for localStorage changes (legacy support)
     window.addEventListener(PROMOTION_STORE_CHANGED, refresh);
     window.addEventListener("storage", refresh);
@@ -47,7 +47,13 @@ function useLivePromotions(placement: "MAIN_BANNER" | "SPONSORED_VOUCHER") {
 }
 
 function getPromoField(promo: Promotion | MerchantPromotion, field: string): string {
-  return (promo as any)[field] || "";
+  const value = (promo as Record<string, unknown>)[field];
+  return typeof value === "string" ? value : "";
+}
+
+function getPromoMerchantName(promo: Promotion | MerchantPromotion): string {
+  if ("merchantName" in promo) return promo.merchantName;
+  return promo.merchant?.businessName || "";
 }
 
 export function MainPromotionBanners() {
@@ -91,7 +97,7 @@ export function SponsoredVoucherPromotions() {
                       headline: getPromoField(promotion, "templateHeadline") || promotion.title,
                       subtext: getPromoField(promotion, "templateSubtext"),
                       discountText: getPromoField(promotion, "templateDiscountText"),
-                      merchantName: (promotion as any).merchantName || (promotion as any).merchant?.businessName || "",
+                      merchantName: getPromoMerchantName(promotion),
                     }}
                   />
                 ) : (
@@ -130,6 +136,13 @@ export function SponsoredVoucherPromotions() {
               <span className={styles.promoBadge}>Exclusive</span>
               <h3 className={styles.promoTitle}>Spa Day 50% Off</h3>
               <p className={styles.promoDesc}>Pamper yourself today</p>
+            </div>
+          </Link>
+          <Link href="/category/food-and-drink" className={styles.promoBanner}>
+            <div className={`${styles.promoContent} ${styles.promoDining}`}>
+              <span className={styles.promoBadge}>Voucher</span>
+              <h3 className={styles.promoTitle}>Dinner Tk. 200 off</h3>
+              <p className={styles.promoDesc}>Save on your next meal</p>
             </div>
           </Link>
         </div>

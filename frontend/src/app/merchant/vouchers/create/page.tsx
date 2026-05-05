@@ -95,9 +95,11 @@ export default function CreateVouchersPage() {
   const printRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setBatches(loadBatches());
-    const color = localStorage.getItem("cpb_merchant_brand_color");
-    if (color) setBrandColor(color);
+    Promise.resolve().then(() => {
+      setBatches(loadBatches());
+      const color = localStorage.getItem("cpb_merchant_brand_color");
+      if (color) setBrandColor(color);
+    });
   }, []);
 
   const selectedDeal = DEMO_DEALS.find((d) => d.id === dealId);

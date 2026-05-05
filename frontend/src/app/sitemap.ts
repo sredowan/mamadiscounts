@@ -10,8 +10,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '',
     '/deals',
     '/search',
-    '/auth/login',
+    '/customer/login',
     '/auth/register',
+    '/merchant/login',
+    '/admin/login',
     '/about',
     '/merchant',
   ].map((route) => ({

@@ -60,7 +60,7 @@ export function CampaignSlider() {
   }, []);
 
   useEffect(() => {
-    refresh();
+    Promise.resolve().then(refresh);
     window.addEventListener(PROMOTION_STORE_CHANGED, refresh);
     window.addEventListener("storage", refresh);
     return () => {
@@ -91,7 +91,8 @@ export function CampaignSlider() {
 
   function getField(slide: SlideItem, field: string): string {
     if (slide.kind === "static") return "";
-    return (slide.promotion as any)[field] || "";
+    const value = (slide.promotion as Record<string, unknown>)[field];
+    return typeof value === "string" ? value : "";
   }
 
   function getMerchantName(slide: SlideItem): string {

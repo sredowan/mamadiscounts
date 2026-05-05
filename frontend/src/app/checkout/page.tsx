@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -10,12 +10,10 @@ import {
   ChevronRight,
   CreditCard,
   Gift,
-  HeartHandshake,
   Lock,
   Mail,
   MapPin,
   Minus,
-  PackageCheck,
   Phone,
   Plus,
   Send,
@@ -95,10 +93,11 @@ type GiftInfo = {
 };
 
 export default function CheckoutPage() {
-  const [cart, setCart] = useState<CartItem[]>(() => getCheckoutCart(INITIAL_CART));
+  const [isMounted, setIsMounted] = useState(false);
+  const [cart, setCart] = useState<CartItem[]>(INITIAL_CART);
   const [step, setStep] = useState<Step>("details");
   const [buyer, setBuyer] = useState<BuyerInfo>({ name: "", email: "", phone: "" });
-  const [buyAsGift, setBuyAsGift] = useState(() => getCheckoutBuyAsGift());
+  const [buyAsGift, setBuyAsGift] = useState(false);
   const [giftMode, setGiftMode] = useState<GiftMode>("online");
   const [deliveryZone, setDeliveryZone] = useState<DeliveryZone>("inside_dhaka");
   const [giftInfo, setGiftInfo] = useState<GiftInfo>({
@@ -171,6 +170,25 @@ export default function CheckoutPage() {
     setIsProcessing(false);
   }
 
+  useEffect(() => {
+    let cancelled = false;
+
+    Promise.resolve().then(() => {
+      if (cancelled) return;
+      setCart(getCheckoutCart(INITIAL_CART));
+      setBuyAsGift(getCheckoutBuyAsGift());
+      setIsMounted(true);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (!isMounted) {
+    return null; // Prevent hydration mismatch by rendering nothing on server pass
+  }
+
   if (cart.length === 0 && step !== "success") {
     return (
       <div className={styles.empty}>
@@ -221,25 +239,15 @@ export default function CheckoutPage() {
     <div className={styles.page}>
       <div className="container">
         <header className={styles.hero}>
-          <Link href="/" className={styles.backLink}><ArrowLeft size={18} /> Continue Shopping</Link>
-          <div className={styles.heroContent}>
-            <div>
-              <p className={styles.kicker}>Secure COUPONUS checkout</p>
-              <h1 className={styles.title}>Buy now, gift beautifully, redeem easily.</h1>
-              <p className={styles.subtitle}>Fast voucher checkout with smart gifts, add-ons, and verified merchant protection.</p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+            <Link href="/" className={styles.backLink} style={{ marginBottom: 0 }}><ArrowLeft size={18} /> Continue Shopping</Link>
+            <div className={styles.steps} style={{ marginTop: 0 }} aria-label="Checkout progress">
+              <StepPill active={step === "details"} done={step !== "details"} label="Details" />
+              <ChevronRight size={15} />
+              <StepPill active={step === "payment"} done={step === "confirm"} label="Payment" />
+              <ChevronRight size={15} />
+              <StepPill active={step === "confirm"} done={false} label="Confirm" />
             </div>
-            <div className={styles.heroTrust}>
-              <span><Shield size={15} /> Secure payment</span>
-              <span><PackageCheck size={15} /> Instant voucher</span>
-              <span><HeartHandshake size={15} /> Gift-ready</span>
-            </div>
-          </div>
-          <div className={styles.steps} aria-label="Checkout progress">
-            <StepPill active={step === "details"} done={step !== "details"} label="Details" />
-            <ChevronRight size={15} />
-            <StepPill active={step === "payment"} done={step === "confirm"} label="Payment" />
-            <ChevronRight size={15} />
-            <StepPill active={step === "confirm"} done={false} label="Confirm" />
           </div>
         </header>
 
@@ -312,7 +320,7 @@ export default function CheckoutPage() {
                   )}
                 </section>
 
-                <section className={styles.panel}>
+                <section className={cn(styles.panel, styles.optionalPanel)}>
                   <PanelHeader icon={Zap} eyebrow="Smart offers" title="Upgrade the order" text="Premium add-ons are optional and easy to remove before payment." />
                   <div className={styles.offerGrid}>
                     {(Object.keys(OFFER_ITEMS) as OfferKey[]).map((key) => {
@@ -336,7 +344,7 @@ export default function CheckoutPage() {
                   )}
                 </section>
 
-                <section className={styles.panel}>
+                <section className={cn(styles.panel, styles.optionalPanel)}>
                   <PanelHeader icon={ShoppingBag} eyebrow="Cross-sell" title="Pairs well with your order" text="Add one more voucher while checkout is open." />
                   <div className={styles.crossSellGrid}>
                     {suggestedDeals.map((deal) => (
@@ -455,6 +463,28 @@ export default function CheckoutPage() {
               <div className={styles.trustRow}><Shield size={14} /><span>Secure checkout. Voucher support if merchant redemption fails.</span></div>
             </div>
           </aside>
+        </div>
+
+        <div className={styles.mobileCheckoutBar}>
+          <div>
+            <span>Total</span>
+            <strong>{formatBDT(total)}</strong>
+          </div>
+          {step === "details" && (
+            <button onClick={() => setStep("payment")} disabled={!detailsReady} type="button">
+              {detailsReady ? "Continue to payment" : "Fill details"}
+            </button>
+          )}
+          {step === "payment" && (
+            <button onClick={() => handlePaymentStep("confirm")} disabled={bkashPhone.length < 10 || isProcessing} type="button">
+              {isProcessing ? "Processing..." : "Pay now"}
+            </button>
+          )}
+          {step === "confirm" && (
+            <button onClick={() => handlePaymentStep("success")} disabled={isProcessing} type="button">
+              {isProcessing ? "Confirming..." : "Confirm"}
+            </button>
+          )}
         </div>
       </div>
     </div>

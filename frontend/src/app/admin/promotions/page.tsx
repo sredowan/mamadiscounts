@@ -18,6 +18,7 @@ import {
   type PromotionStatus,
 } from "@/lib/promotion-api";
 import { normalizePromotionImage } from "@/lib/promotion-image";
+import type { PromotionPlacement as ImagePromotionPlacement } from "@/lib/promotion-store";
 import { formatBDT } from "@/lib/utils";
 import styles from "../../merchant/merchant.module.css";
 
@@ -69,7 +70,7 @@ export default function AdminPromotionsPage() {
     }
   }, [filter]);
 
-  useEffect(() => { refresh(); }, [refresh]);
+  useEffect(() => { Promise.resolve().then(refresh); }, [refresh]);
 
   async function handleApprove(promotion: Promotion) {
     if (promotion.paymentStatus !== "VERIFIED") {
@@ -127,8 +128,8 @@ export default function AdminPromotionsPage() {
     const file = event.target.files?.[0];
     if (!file) return;
     try {
-      const placementKey = promotion.placement === "MAIN_BANNER" ? "main_banner" : "sponsored_voucher";
-      const newImageUrl = await normalizePromotionImage(file, placementKey as any);
+      const placementKey: ImagePromotionPlacement = promotion.placement === "MAIN_BANNER" ? "main_banner" : "sponsored_voucher";
+      const newImageUrl = await normalizePromotionImage(file, placementKey);
       const result = await adminUpdatePromotion(promotion.id, { imageUrl: newImageUrl });
       if (result.error) setMessage(result.error);
       else { setMessage("Promotion image replaced."); await refresh(); }
@@ -170,7 +171,7 @@ export default function AdminPromotionsPage() {
         </div>
         <div className={styles.heroPanel}>
           <p className={styles.heroPanelLabel}>Capacity</p>
-          <p className={styles.heroPanelValue}>5/3</p>
+          <p className={styles.heroPanelValue}>{SLOT_CAPACITY.MAIN_BANNER}/{SLOT_CAPACITY.SPONSORED_VOUCHER}</p>
           <p className={styles.heroPanelMeta}>banner / voucher per slot</p>
         </div>
       </section>

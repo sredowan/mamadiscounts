@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, TrendingUp, MapPin, Navigation, Loader2 } from "lucide-react";
 import { DealCard } from "@/components/deals/DealCard";
-import { DEAL_STORE_CHANGED, getMarketplaceDeals } from "@/lib/deal-store";
+import { DEAL_STORE_CHANGED, getLiveMarketplaceDeals } from "@/lib/deal-store";
 import { getUserLocation, sortDealsByDistance } from "@/lib/geo";
 import type { Deal } from "@/types";
 import type { UserCoords } from "@/lib/geo";
@@ -20,55 +20,59 @@ type GeoState =
   | { status: "denied"; message: string };
 
 export function NearbyDealsSection() {
-  const [deals, setDeals] = useState<Deal[]>([]);
-  const [geo, setGeo] = useState<GeoState>({ status: "idle" });
+  const [rawDeals, setRawDeals] = useState<Deal[]>([]);
+  const [geo, setGeo] = useState<GeoState>({ status: "loading" });
 
-  // Load raw deals from store
-  const refreshDeals = useCallback(() => getMarketplaceDeals(), []);
+  const deals = useMemo(() => {
+    if (geo.status === "granted") {
+      return sortDealsByDistance(rawDeals, geo.coords.latitude, geo.coords.longitude);
+    }
+
+    return rawDeals;
+  }, [geo, rawDeals]);
 
   // Request geolocation on mount
   useEffect(() => {
-    setGeo({ status: "loading" });
+    let cancelled = false;
 
     getUserLocation()
-      .then((coords) => setGeo({ status: "granted", coords }))
-      .catch(() =>
-        setGeo({
-          status: "denied",
-          message: "Enable location to see deals near you",
-        })
-      );
+      .then((coords) => {
+        if (!cancelled) setGeo({ status: "granted", coords });
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setGeo({
+            status: "denied",
+            message: "Enable location to see deals near you",
+          });
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
-
-  // When geo state changes or deals change, re-sort
-  useEffect(() => {
-    const raw = refreshDeals();
-
-    if (geo.status === "granted") {
-      setDeals(sortDealsByDistance(raw, geo.coords.latitude, geo.coords.longitude));
-    } else {
-      setDeals(raw);
-    }
-  }, [geo, refreshDeals]);
 
   // Listen for deal store changes
   useEffect(() => {
-    const refresh = () => {
-      const raw = getMarketplaceDeals();
-      if (geo.status === "granted") {
-        setDeals(sortDealsByDistance(raw, geo.coords.latitude, geo.coords.longitude));
-      } else {
-        setDeals(raw);
-      }
-    };
+    let cancelled = false;
 
-    window.addEventListener(DEAL_STORE_CHANGED, refresh);
-    window.addEventListener("storage", refresh);
+    function refreshDeals() {
+      getLiveMarketplaceDeals({ limit: 50 }).then((nextDeals) => {
+        if (!cancelled) setRawDeals(nextDeals);
+      });
+    }
+
+    Promise.resolve().then(refreshDeals);
+
+    window.addEventListener(DEAL_STORE_CHANGED, refreshDeals);
+    window.addEventListener("storage", refreshDeals);
     return () => {
-      window.removeEventListener(DEAL_STORE_CHANGED, refresh);
-      window.removeEventListener("storage", refresh);
+      cancelled = true;
+      window.removeEventListener(DEAL_STORE_CHANGED, refreshDeals);
+      window.removeEventListener("storage", refreshDeals);
     };
-  }, [geo]);
+  }, []);
 
   return (
     <section className="section">
@@ -174,8 +178,9 @@ export function FeaturedDealsSection() {
   const [deals, setDeals] = useState<Deal[]>([]);
 
   useEffect(() => {
-    const refresh = () => {
-      setDeals(getMarketplaceDeals().filter((d) => d.isFeatured));
+    const refresh = async () => {
+      const allDeals = await getLiveMarketplaceDeals({ limit: 50 });
+      setDeals(allDeals.filter((d) => d.isFeatured));
     };
     refresh();
 

@@ -68,7 +68,7 @@ export function Header() {
             <Link href="/checkout" className={styles.iconBtn} aria-label="Cart">
               <ShoppingBag size={22} strokeWidth={2} />
             </Link>
-            <Link href="/auth/login" className={styles.userBtn} aria-label="Sign in">
+            <Link href="/customer/login" className={styles.userBtn} aria-label="Sign in">
               <CircleUser size={22} strokeWidth={2} />
             </Link>
           </div>

@@ -1,6 +1,6 @@
 import { DEMO_DEALS } from "@/lib/demo-data";
-import { calcDiscount, slugify } from "@/lib/utils";
-import type { Deal } from "@/types";
+import { API_URL, calcDiscount, slugify } from "@/lib/utils";
+import type { Deal, DealBadge } from "@/types";
 
 export type DealReviewStatus = "pending_review" | "approved" | "changes_requested";
 
@@ -61,6 +61,14 @@ export type NewDealInput = {
   };
 };
 
+type ApiDeal = Partial<Omit<Deal, "status" | "highlights" | "images" | "options" | "badges">> & {
+  status?: string;
+  highlights?: unknown;
+  images?: unknown;
+  options?: unknown;
+  badges?: unknown;
+};
+
 const DEALS_KEY = "couponus_merchant_created_deals";
 const MERCHANTS_KEY = "couponus_registered_merchants";
 export const DEAL_STORE_CHANGED = "couponus-deals-changed";
@@ -96,6 +104,53 @@ export function getMarketplaceDeals(): Deal[] {
       .map(normalizeMarketplaceDeal),
     ...DEMO_DEALS,
   ];
+}
+
+export async function fetchMarketplaceDeals({
+  category,
+  limit = 50,
+  timeoutMs = 4500,
+}: {
+  category?: string;
+  limit?: number;
+  timeoutMs?: number;
+} = {}): Promise<Deal[]> {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const params = new URLSearchParams({ limit: String(limit) });
+    if (category) params.set("category", category);
+
+    const response = await fetch(`${API_URL}/deals?${params.toString()}`, {
+      signal: controller.signal,
+    });
+
+    if (!response.ok) throw new Error(`Deals API failed with ${response.status}`);
+
+    const payload = await response.json();
+    const rawDeals: ApiDeal[] = Array.isArray(payload?.data) ? payload.data : Array.isArray(payload) ? payload : [];
+    return rawDeals.map(normalizeApiDeal);
+  } finally {
+    window.clearTimeout(timeout);
+  }
+}
+
+export async function getLiveMarketplaceDeals(options: { category?: string; limit?: number; timeoutMs?: number } = {}) {
+  try {
+    const apiDeals = await fetchMarketplaceDeals(options);
+    if (apiDeals.length > 0) return mergeDeals(apiDeals, getMarketplaceDeals());
+  } catch {
+    // API unavailable on LAN/offline/dev startup: keep storefront populated.
+  }
+
+  return getMarketplaceDeals();
+}
+
+export function mergeDeals(primary: Deal[], fallback: Deal[]) {
+  const bySlug = new Map<string, Deal>();
+  [...primary, ...fallback].forEach((deal) => bySlug.set(deal.slug, deal));
+  return Array.from(bySlug.values());
 }
 
 function normalizeMarketplaceDeal(deal: ManagedDeal): Deal {
@@ -146,6 +201,111 @@ function normalizeMarketplaceDeal(deal: ManagedDeal): Deal {
     options: Array.isArray(deal.options) ? deal.options : [],
     badges: Array.isArray(deal.badges) ? deal.badges : [],
   };
+}
+
+function normalizeApiDeal(deal: ApiDeal): Deal {
+  const category: Partial<Deal["category"]> = deal.category || {};
+  const merchant: Partial<Deal["merchant"]> = deal.merchant || {};
+  const isSponsored = Boolean(deal.isSponsored);
+
+  return {
+    id: String(deal.id || deal.slug || "api-deal"),
+    slug: String(deal.slug || deal.id || "api-deal"),
+    title: String(deal.title || "Untitled deal"),
+    description: String(deal.description || ""),
+    finePrint: typeof deal.finePrint === "string" ? deal.finePrint : undefined,
+    highlights: parseStringList(deal.highlights),
+    images: parseStringList(deal.images),
+    originalPrice: toNumber(deal.originalPrice),
+    dealPrice: toNumber(deal.dealPrice),
+    discountPercent: toNumber(deal.discountPercent),
+    extraDiscount: deal.extraDiscount === undefined || deal.extraDiscount === null ? undefined : toNumber(deal.extraDiscount),
+    extraDiscountLabel: deal.extraDiscountLabel,
+    quantityTotal: toNumber(deal.quantityTotal),
+    quantitySold: toNumber(deal.quantitySold),
+    maxPerUser: toNumber(deal.maxPerUser) || 1,
+    startDate: String(deal.startDate || ""),
+    endDate: String(deal.endDate || ""),
+    status: normalizeStatus(deal.status),
+    isFeatured: Boolean(deal.isFeatured),
+    isSponsored,
+    viewCount: toNumber(deal.viewCount),
+    ratingAvg: toNumber(deal.ratingAvg),
+    ratingCount: toNumber(deal.ratingCount),
+    merchant: {
+      id: String(merchant.id || "unknown"),
+      businessName: String(merchant.businessName || "Unknown merchant"),
+      logoUrl: merchant.logoUrl,
+      address: String(merchant.address || ""),
+      area: String(merchant.area || ""),
+      city: String(merchant.city || ""),
+      latitude: optionalNumber(merchant.latitude),
+      longitude: optionalNumber(merchant.longitude),
+      distanceKm: optionalNumber(merchant.distanceKm),
+      isVerified: Boolean(merchant.isVerified),
+      ratingAvg: toNumber(merchant.ratingAvg),
+      ratingCount: toNumber(merchant.ratingCount),
+      locationCount: merchant.locationCount,
+    },
+    category: {
+      id: String(category.id || category.slug || "uncategorized"),
+      name: String(category.name || "Uncategorized"),
+      slug: String(category.slug || category.id || "uncategorized"),
+    },
+    options: parseOptions(deal.options),
+    badges: parseBadges(deal.badges, isSponsored),
+  };
+}
+
+function parseStringList(value: unknown): string[] {
+  if (Array.isArray(value)) return value.map(String);
+  if (typeof value !== "string") return [];
+
+  try {
+    const parsed = JSON.parse(value) as unknown;
+    return Array.isArray(parsed) ? parsed.map(String) : [];
+  } catch {
+    return value ? [value] : [];
+  }
+}
+
+function parseOptions(value: unknown): Deal["options"] {
+  const rawOptions = Array.isArray(value) ? value : [];
+  return rawOptions.map((option, index) => {
+    const item = option as Record<string, unknown>;
+    return {
+      id: String(item.id || `option-${index}`),
+      title: String(item.title || "Deal option"),
+      originalPrice: toNumber(item.originalPrice),
+      dealPrice: toNumber(item.dealPrice),
+      boughtCount: toNumber(item.boughtCount),
+    };
+  });
+}
+
+function parseBadges(value: unknown, isSponsored: boolean): DealBadge[] {
+  if (Array.isArray(value)) return value.filter(isDealBadge);
+  return isSponsored ? ["sponsored", "verified"] : ["verified"];
+}
+
+function isDealBadge(value: unknown): value is DealBadge {
+  return ["popular", "sponsored", "limited", "verified", "new", "gift", "bookable"].includes(String(value));
+}
+
+function normalizeStatus(status: unknown): Deal["status"] {
+  const normalized = String(status || "active").toLowerCase();
+  if (["active", "paused", "expired", "sold_out", "draft"].includes(normalized)) return normalized as Deal["status"];
+  return "active";
+}
+
+function toNumber(value: unknown): number {
+  const numberValue = Number(value);
+  return Number.isFinite(numberValue) ? numberValue : 0;
+}
+
+function optionalNumber(value: unknown): number | undefined {
+  const numberValue = toNumber(value);
+  return numberValue === 0 && (value === undefined || value === null || value === "") ? undefined : numberValue;
 }
 
 export function createManagedDeal(input: NewDealInput): ManagedDeal {
@@ -308,8 +468,7 @@ export async function loginMerchant(email: string, password?: string) {
 
     if (res.ok) {
       const data = await res.json();
-      // Only allow MERCHANT and ADMIN roles to access merchant portal
-      if (data.user && (data.user.role === "MERCHANT" || data.user.role === "ADMIN")) {
+      if (data.user && data.user.role === "MERCHANT") {
         const userSession = {
           id: data.user.id,
           email: data.user.email,
@@ -331,6 +490,8 @@ export async function loginMerchant(email: string, password?: string) {
   const merchants = getRegisteredMerchants();
   const merchant = merchants.find(m => m.email === email && (!m.password || m.password === password));
   if (merchant) {
+    localStorage.removeItem("couponus_token");
+    localStorage.removeItem("couponus_refresh_token");
     const userSession = {
       id: merchant.id,
       email: merchant.email,
@@ -347,6 +508,7 @@ export async function loginMerchant(email: string, password?: string) {
 export function logoutMerchant() {
   if (!canUseStorage()) return;
   localStorage.removeItem("couponus_user");
+  localStorage.removeItem("couponus_token");
   localStorage.removeItem("couponus_access_token");
   localStorage.removeItem("couponus_refresh_token");
 }

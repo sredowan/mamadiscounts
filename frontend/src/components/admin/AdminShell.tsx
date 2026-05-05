@@ -16,8 +16,15 @@ import {
   ShieldCheck,
   Megaphone,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { API_URL, cn } from "@/lib/utils";
 import styles from "./AdminShell.module.css";
+
+type AdminUser = {
+  id: string;
+  email: string;
+  fullName: string;
+  role: string;
+};
 
 const ADMIN_NAV_SECTIONS = [
   {
@@ -54,6 +61,48 @@ const MOBILE_NAV = [
 function isActive(pathname: string, href: string) {
   if (href === "/admin/dashboard") return pathname === href;
   return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function clearAdminSession() {
+  localStorage.removeItem("couponus_user");
+  localStorage.removeItem("couponus_token");
+  localStorage.removeItem("couponus_access_token");
+  localStorage.removeItem("couponus_refresh_token");
+}
+
+function getAccessToken() {
+  return localStorage.getItem("couponus_access_token") || localStorage.getItem("couponus_token");
+}
+
+async function refreshAccessToken() {
+  const refreshToken = localStorage.getItem("couponus_refresh_token");
+  if (!refreshToken) return null;
+
+  const response = await fetch(`${API_URL}/auth/refresh`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ refreshToken }),
+  });
+
+  if (!response.ok) return null;
+
+  const data = await response.json();
+  localStorage.setItem("couponus_user", JSON.stringify(data.user));
+  localStorage.setItem("couponus_token", data.accessToken);
+  localStorage.setItem("couponus_access_token", data.accessToken);
+  localStorage.setItem("couponus_refresh_token", data.refreshToken);
+  return data.accessToken as string;
+}
+
+async function fetchAdminUser(token: string): Promise<AdminUser | null> {
+  const response = await fetch(`${API_URL}/auth/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) return null;
+
+  const user = await response.json() as AdminUser;
+  return user.role === "ADMIN" ? user : null;
 }
 
 function AdminSidebarContent({ pathname }: { pathname: string }) {
@@ -100,47 +149,49 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
 
-  // Auto-login as admin on mount
   useEffect(() => {
-    async function autoLogin() {
-      // Skip if already authenticated
-      const existing = localStorage.getItem("couponus_token");
-      if (existing && existing !== "demo-merchant-token-hardcoded") return;
+    let cancelled = false;
 
+    async function requireAdminSession() {
       try {
-        const API_URL = `http://${window.location.hostname}:4000/api`;
-        const res = await fetch(`${API_URL}/auth/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: "admin@couponusbd.com", password: "Admin@2026" }),
-        });
+        const token = getAccessToken();
+        const validToken = token === "demo-merchant-token-hardcoded" ? null : token;
+        let user = validToken ? await fetchAdminUser(validToken) : null;
 
-        if (res.ok) {
-          const data = await res.json();
-          localStorage.setItem("couponus_user", JSON.stringify({
-            id: data.user.id,
-            email: data.user.email,
-            fullName: data.user.fullName,
-            role: data.user.role,
-          }));
-          localStorage.setItem("couponus_token", data.accessToken);
-          localStorage.setItem("couponus_access_token", data.accessToken);
-          localStorage.setItem("couponus_refresh_token", data.refreshToken);
+        if (!user) {
+          const refreshedToken = await refreshAccessToken();
+          user = refreshedToken ? await fetchAdminUser(refreshedToken) : null;
         }
+
+        if (cancelled) return;
+
+        if (user) {
+          localStorage.setItem("couponus_user", JSON.stringify(user));
+          setAdminUser(user);
+          return;
+        }
+
+        clearAdminSession();
+        router.replace("/admin/login");
       } catch {
-        // Backend unavailable — admin pages still work for demo
+        if (cancelled) return;
+        clearAdminSession();
+        router.replace("/admin/login");
       }
     }
-    autoLogin();
-  }, []);
+
+    requireAdminSession();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [router]);
 
   function handleLogout() {
-    localStorage.removeItem("couponus_user");
-    localStorage.removeItem("couponus_token");
-    localStorage.removeItem("couponus_access_token");
-    localStorage.removeItem("couponus_refresh_token");
-    router.push("/");
+    clearAdminSession();
+    router.push("/admin/login");
   }
 
   const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
@@ -148,6 +199,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     queueMicrotask(closeMobileMenu);
   }, [pathname, closeMobileMenu]);
+
+  if (!adminUser) return null;
 
   return (
     <div className={styles.shell}>

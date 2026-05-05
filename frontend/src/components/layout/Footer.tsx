@@ -1,68 +1,11 @@
 import Link from "next/link";
-import { MapPin, Mail, Phone, Globe, Shield, CreditCard, ArrowRight } from "lucide-react";
-import { SITE_NAME, CATEGORIES, CITIES, FOOTER_SERVICES, DHAKA_SEO_LINKS, DNCC_ZONES, DSCC_AREAS } from "@/lib/constants";
+import { Shield, CreditCard } from "lucide-react";
+import { SITE_NAME } from "@/lib/constants";
 import styles from "./Footer.module.css";
 
 export function Footer() {
   return (
     <footer className={styles.footer}>
-      {/* SEO Links Section */}
-      <div className={styles.seoSection}>
-        <div className="container">
-          <h3 className={styles.seoTitle}>Popular Services Near You</h3>
-          <div className={styles.seoLinks}>
-            {FOOTER_SERVICES.map((service) => (
-              <Link
-                key={service}
-                href={`/search?q=${encodeURIComponent(service.replace(" Near You", ""))}`}
-                className={styles.seoLink}
-              >
-                {service}
-              </Link>
-            ))}
-          </div>
-
-          <h3 className={styles.seoTitle}>Deals in Dhaka North (DNCC)</h3>
-          <div className={styles.seoLinks}>
-            {DNCC_ZONES.flatMap((zone) =>
-              zone.areas.slice(0, 5).map((area) => (
-                <Link
-                  key={`dncc-${area}`}
-                  href={`/browse/dhaka/${area.toLowerCase().replace(/[\s\/]+/g, "-")}`}
-                  className={styles.seoLink}
-                >
-                  Deals in {area}
-                </Link>
-              ))
-            )}
-          </div>
-
-          <h3 className={styles.seoTitle}>Deals in Dhaka South (DSCC)</h3>
-          <div className={styles.seoLinks}>
-            {DSCC_AREAS.flatMap((zone) =>
-              zone.areas.slice(0, 4).map((area) => (
-                <Link
-                  key={`dscc-${zone.slug}-${area}`}
-                  href={`/browse/dhaka/${area.toLowerCase().replace(/[\s\/]+/g, "-")}`}
-                  className={styles.seoLink}
-                >
-                  Deals in {area}
-                </Link>
-              ))
-            )}
-          </div>
-
-          <h3 className={styles.seoTitle}>Browse Categories</h3>
-          <div className={styles.seoLinks}>
-            {CATEGORIES.map((cat) => (
-              <Link key={cat.id} href={`/category/${cat.slug}`} className={styles.seoLink}>
-                {cat.name} Deals
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* Main Footer */}
       <div className={styles.mainFooter}>
         <div className="container">

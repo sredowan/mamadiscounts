@@ -75,7 +75,7 @@ model Promotion {
   merchantId           String
   placement            PromotionPlacement
   title                String
-  imageUrl             String?
+  imageUrl             String?                 @db.LongText
   linkType             PromotionLinkType       @default(DEAL)
   linkHref             String
 
@@ -89,8 +89,8 @@ model Promotion {
   templateHeadline     String?
   templateSubtext      String?
   templateDiscountText String?
-  templateShopLogo     String?
-  templateProductImage String?
+  templateShopLogo     String?                 @db.LongText
+  templateProductImage String?                 @db.LongText
 
   // Status
   status               PromotionStatus         @default(PENDING_REVIEW)

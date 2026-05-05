@@ -169,6 +169,21 @@
   transform: translateY(-2px);
 }
 
+@media (min-width: 1024px) {
+  .promoScrollWrap {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    overflow: visible;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .promoBanner {
+    flex: initial;
+  }
+}
+
 .promoContent {
   padding: var(--space-6);
   min-height: 160px;
@@ -188,6 +203,10 @@
 
 .promoExclusive {
   background: linear-gradient(135deg, #8b5cf6, #6d28d9); /* Purple */
+}
+
+.promoDining {
+  background: linear-gradient(135deg, #ec4899, #be185d); /* Pink */
 }
 
 .promoBadge {

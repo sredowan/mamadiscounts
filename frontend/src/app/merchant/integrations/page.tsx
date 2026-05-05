@@ -21,10 +21,12 @@ export default function IntegrationsPage() {
   const [widgetLocale, setWidgetLocale] = useState("en");
 
   useEffect(() => {
-    const savedKey = localStorage.getItem("cpb_merchant_api_key");
-    if (savedKey) setApiKey(savedKey);
-    const savedColor = localStorage.getItem("cpb_merchant_brand_color");
-    if (savedColor) setWidgetColor(savedColor);
+    Promise.resolve().then(() => {
+      const savedKey = localStorage.getItem("cpb_merchant_api_key");
+      if (savedKey) setApiKey(savedKey);
+      const savedColor = localStorage.getItem("cpb_merchant_brand_color");
+      if (savedColor) setWidgetColor(savedColor);
+    });
   }, []);
 
   function generateApiKey() {

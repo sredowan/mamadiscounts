@@ -34,7 +34,7 @@ const SLOT_PRICES: Record<string, Record<string, number>> = {
 
 const SLOT_CAPACITY: Record<string, number> = {
   MAIN_BANNER: 5,
-  SPONSORED_VOUCHER: 3,
+  SPONSORED_VOUCHER: 4,
 };
 
 function getSlotPrice(tier: string, placement: string): number {

@@ -94,30 +94,6 @@ export default function CategoryDealsPage() {
 
   return (
     <div className={styles.page}>
-      <section className={styles.hero} style={{ "--category-color": categoryColor } as React.CSSProperties}>
-        <div className="container">
-          <nav className={styles.breadcrumb} aria-label="Breadcrumb">
-            <Link href="/">Home</Link>
-            <ArrowRight size={13} />
-            <span>{categoryName}</span>
-          </nav>
-
-          <div className={styles.heroCard}>
-            <div className={styles.iconShell}>
-              <CategoryIcon size={30} strokeWidth={2.25} />
-            </div>
-            <div>
-              <p className={styles.kicker}>Category deals</p>
-              <h1 className={styles.title}>{categoryName}</h1>
-              <p className={styles.subtitle}>
-                {status === "loading"
-                  ? "Loading the latest category deals..."
-                  : `${sortedDeals.length} exact ${categoryName.toLowerCase()} deal${sortedDeals.length === 1 ? "" : "s"} available now.`}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <section className={styles.content}>
         <div className="container">
@@ -140,9 +116,10 @@ export default function CategoryDealsPage() {
           </div>
 
           {status === "loading" ? (
-            <div className={styles.stateCard}>
-              <Loader2 size={28} className={styles.spin} />
-              <p>Fetching deals from <code>/api/deals?category={categorySlug}</code></p>
+            <div className="deal-grid">
+              {[...Array(8)].map((_, i) => (
+                <div key={i} className={styles.skeletonCard} />
+              ))}
             </div>
           ) : sortedDeals.length > 0 ? (
             <div className="deal-grid">

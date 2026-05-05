@@ -12,8 +12,9 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isMerchantRoute = pathname.startsWith("/merchant");
   const isAdminRoute = pathname.startsWith("/admin");
+  const isStandaloneAuthRoute = pathname === "/customer/login" || pathname === "/auth/login";
 
-  if (isMerchantRoute || isAdminRoute) {
+  if (isMerchantRoute || isAdminRoute || isStandaloneAuthRoute) {
     return <>{children}</>;
   }
 
