@@ -1,8 +1,9 @@
 import type { NextConfig } from "next";
+import { resolve } from "path";
 
 const nextConfig: NextConfig = {
   turbopack: {
-    root: process.cwd(),
+    root: resolve(process.cwd()),
   },
   images: {
     remotePatterns: [
@@ -15,7 +16,6 @@ const nextConfig: NextConfig = {
         hostname: "*.cloudinary.com",
       },
     ],
-    // Use unoptimized for demo since we use placeholders
     unoptimized: true,
   },
 };
