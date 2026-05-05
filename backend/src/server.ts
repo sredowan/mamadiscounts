@@ -81,6 +81,15 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 // ── Health Check ───────────────────────────────────────
+app.get("/", (_req, res) => {
+  res.json({
+    status: "ok",
+    service: "couponus-bd-api",
+    message: "COUPONUS BD API is running. Use /api/health for health checks.",
+    health: "/api/health",
+  });
+});
+
 app.get("/api/health", (_req, res) => {
   res.json({
     status: "healthy",
