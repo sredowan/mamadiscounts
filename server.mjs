@@ -5,8 +5,8 @@ import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const requireFromFrontend = createRequire(path.join(__dirname, "frontend", "package.json"));
-const next = requireFromFrontend("next");
+const requireFromRoot = createRequire(import.meta.url);
+const next = requireFromRoot("next");
 const { createApp } = await import("./backend/dist/app.js");
 
 const port = Number(process.env.PORT || 3000);
