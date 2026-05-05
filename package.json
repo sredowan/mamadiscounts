@@ -1,0 +1,10 @@
+{
+  "name": "couponus-bd-hostinger",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "npm install --prefix backend --omit=dev && npm install --prefix frontend && npm run db:generate --prefix backend && npm run build --prefix backend && npm run build --prefix frontend",
+    "start": "node server.mjs"
+  }
+}

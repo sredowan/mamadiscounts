@@ -77,5 +77,5 @@ export function timeAgo(date: Date | string): string {
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   (typeof window !== "undefined"
-    ? `http://${window.location.hostname}:4000/api`
-    : "http://localhost:4000/api");
+    ? "/api"
+    : `http://127.0.0.1:${process.env.PORT || 4000}/api`);
