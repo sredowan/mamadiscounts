@@ -5,9 +5,11 @@
   "description": "COUPONUS BD — Deals Marketplace",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "build": "cd frontend && npm install && npm run build",
-    "postinstall": "cd frontend && npm install"
+    "start": "node --max-old-space-size=512 server.js",
+    "build": "cd backend && npm install && npm run build && cd ../frontend && npm install && npm run build",
+    "build:frontend": "cd frontend && npm install && npm run build",
+    "build:backend": "cd backend && npm install && npm run build",
+    "postinstall": "cd backend && npm install && cd ../frontend && npm install"
   },
   "engines": {
     "node": ">=18.0.0"

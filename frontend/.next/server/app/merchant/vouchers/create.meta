@@ -1,0 +1,17 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/merchant/layout,_N_T_/merchant/vouchers/layout,_N_T_/merchant/vouchers/create/layout,_N_T_/merchant/vouchers/create/page,_N_T_/merchant/vouchers/create"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/merchant/vouchers/create/__PAGE__",
+    "/merchant/vouchers/create",
+    "/merchant/vouchers",
+    "/merchant",
+    "/_index",
+    "/_head"
+  ]
+}

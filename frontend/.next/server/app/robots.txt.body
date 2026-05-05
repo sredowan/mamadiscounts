@@ -1,0 +1,7 @@
+User-Agent: *
+Allow: /
+Disallow: /account/
+Disallow: /checkout/
+Disallow: /merchant/dashboard/
+
+Sitemap: https://couponusbd.com/sitemap.xml

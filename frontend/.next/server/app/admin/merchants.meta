@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/admin/layout,_N_T_/admin/merchants/layout,_N_T_/admin/merchants/page,_N_T_/admin/merchants"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/admin/merchants/__PAGE__",
+    "/admin/merchants",
+    "/admin",
+    "/_index",
+    "/_head"
+  ]
+}

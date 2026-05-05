@@ -22,6 +22,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://peachpuff-lark-454026.hostingersite.com"),
   title: {
     default: "COUPONUS BD — Best Deals & Discounts in Bangladesh",
     template: "%s | COUPONUS BD",
@@ -66,9 +67,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${inter.variable} ${plusJakarta.variable} ${jetbrainsMono.variable}`}
     >
-      <body>
+      <body suppressHydrationWarning>
         <AppChrome>{children}</AppChrome>
       </body>
     </html>

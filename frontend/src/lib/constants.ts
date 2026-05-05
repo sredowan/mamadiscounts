@@ -169,7 +169,7 @@ export const DSCC_AREAS = [
   {
     zone: "Demra", slug: "demra",
     areas: [
-      "Demra", "Matuail", "Dhania",
+      "Demra", "Matuail (Demra)", "Dhania",
       "Kashipur", "South Matuail",
     ],
   },

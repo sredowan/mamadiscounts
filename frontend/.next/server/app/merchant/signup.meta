@@ -1,0 +1,18 @@
+{
+  "status": 307,
+  "headers": {
+    "location": "/merchant/register",
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/merchant/layout,_N_T_/merchant/signup/layout,_N_T_/merchant/signup/page,_N_T_/merchant/signup"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/merchant/signup/__PAGE__",
+    "/merchant/signup",
+    "/merchant",
+    "/_index",
+    "/_head"
+  ]
+}

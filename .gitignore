@@ -2,19 +2,22 @@
 node_modules/
 .pnp.*
 
-# Build output
-frontend/.next/
+# Next.js — exclude dev caches and build traces (Turbopack SST files are 200MB+)
+# Only .next/server/ and .next/static/ are needed for production
+frontend/.next/cache/
+frontend/.next/dev/
+frontend/.next/trace
+frontend/.next/trace-build
+frontend/.next/turbopack
 frontend/out/
-backend/dist/
 
-# Environment
+# Environment — production env IS committed (no secrets in it)
 .env
 .env.local
-.env.production
 .env.*.local
+# .env.production is NOT ignored — needed on Hostinger
 
 # Logs
-*.log
 npm-debug.log*
 dev.log
 dev.err.log

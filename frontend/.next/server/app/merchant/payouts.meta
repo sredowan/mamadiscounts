@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/merchant/layout,_N_T_/merchant/payouts/layout,_N_T_/merchant/payouts/page,_N_T_/merchant/payouts"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/merchant/payouts/__PAGE__",
+    "/merchant/payouts",
+    "/merchant",
+    "/_index",
+    "/_head"
+  ]
+}
