@@ -8,13 +8,46 @@
  * Entry: root package.json → "main": "server.js" → "start": "node server.js"
  */
 
+// ── Load .env from backend/ (no dotenv dependency needed) ──────────
+const fs = require("fs");
+const path = require("path");
+
+function loadEnvFile(filePath) {
+  try {
+    const content = fs.readFileSync(filePath, "utf-8");
+    for (const line of content.split("\n")) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const eqIdx = trimmed.indexOf("=");
+      if (eqIdx === -1) continue;
+      const key = trimmed.slice(0, eqIdx).trim();
+      let val = trimmed.slice(eqIdx + 1).trim();
+      // Strip surrounding quotes
+      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+        val = val.slice(1, -1);
+      }
+      // Don't overwrite existing env vars (Hostinger panel takes priority)
+      if (!process.env[key]) {
+        process.env[key] = val;
+      }
+    }
+    console.log(`✅ Loaded env from ${filePath}`);
+  } catch {
+    // File doesn't exist — that's fine, rely on Hostinger env panel
+  }
+}
+
+// Load env: backend/.env (local, gitignored) → backend/.env.production (committed) → root .env
+loadEnvFile(path.join(__dirname, "backend", ".env"));
+loadEnvFile(path.join(__dirname, "backend", ".env.production"));
+loadEnvFile(path.join(__dirname, ".env"));
+
 // ── Critical: constrain threads and memory BEFORE anything else ────
 process.env.UV_THREADPOOL_SIZE = "1";
 process.env.NODE_OPTIONS = process.env.NODE_OPTIONS || "--max-old-space-size=512";
 process.env.NODE_ENV = "production";
 
 const http = require("http");
-const path = require("path");
 
 const FRONTEND_DIR = path.join(__dirname, "frontend");
 const PORT = Number(process.env.PORT || 3000);
