@@ -42,8 +42,11 @@ loadEnvFile(path.join(__dirname, "backend", ".env"));
 loadEnvFile(path.join(__dirname, "backend", ".env.production"));
 loadEnvFile(path.join(__dirname, ".env"));
 
-// ── Critical: constrain threads and memory BEFORE anything else ────
-process.env.UV_THREADPOOL_SIZE = "1";
+// ── Memory constraint (keep small for shared hosting) ──────────────
+// NOTE: Do NOT set UV_THREADPOOL_SIZE=1 — it kills Prisma's Tokio timer thread.
+// The original thread-limit fix was for child-process spawning, which the
+// unified server architecture already eliminates.
+process.env.UV_THREADPOOL_SIZE = process.env.UV_THREADPOOL_SIZE || "4";
 process.env.NODE_OPTIONS = process.env.NODE_OPTIONS || "--max-old-space-size=512";
 process.env.NODE_ENV = "production";
 
