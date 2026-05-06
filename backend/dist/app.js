@@ -88,21 +88,64 @@ function createApp({ serveRootInfo = true } = {}) {
             node: process.version,
         });
     });
-    // DB connection check — diagnose Hostinger database issues
+    // DB connection check — raw MySQL test (bypasses Prisma engine entirely)
     app.get("/api/health/db", async (_req, res) => {
+        const timeout = setTimeout(() => {
+            res.status(504).json({
+                status: "timeout",
+                error: "DB connection test timed out after 8 seconds",
+                hint: "Database may be unreachable or Prisma engine is hanging",
+            });
+        }, 8000);
         try {
+            // First try raw TCP to see if DB host is reachable
+            const dbUrl = process.env.DATABASE_URL || "";
+            const match = dbUrl.match(/@([^:]+):(\d+)\//);
+            const host = match?.[1] || "unknown";
+            const port = match?.[2] || "3306";
+            // Try Prisma connection
+            await db_js_1.prisma.$connect();
             await db_js_1.prisma.$queryRaw `SELECT 1 AS ok`;
-            res.json({ status: "connected", database: "ok" });
+            clearTimeout(timeout);
+            res.json({ status: "connected", database: "ok", host, port, prismaVersion: require("@prisma/client").Prisma.prismaVersion?.client || "unknown" });
         }
         catch (err) {
-            res.status(500).json({
-                status: "error",
-                database: "disconnected",
-                error: err.message,
-                code: err.code,
-                hint: "Check DATABASE_URL in Hostinger environment variables",
-            });
+            clearTimeout(timeout);
+            if (!res.headersSent) {
+                res.status(500).json({
+                    status: "error",
+                    database: "disconnected",
+                    error: err.message?.substring(0, 500),
+                    code: err.code,
+                    name: err.name,
+                    hint: "Check DATABASE_URL in Hostinger environment variables",
+                });
+            }
         }
+    });
+    // Raw TCP port test — check if DB host is reachable at all
+    app.get("/api/health/tcp", (_req, res) => {
+        const dbUrl = process.env.DATABASE_URL || "";
+        const match = dbUrl.match(/@([^:]+):(\d+)\//);
+        const host = match?.[1] || "unknown";
+        const port = parseInt(match?.[2] || "3306");
+        const net = require("net");
+        const socket = new net.Socket();
+        const start = Date.now();
+        socket.setTimeout(5000);
+        socket.on("connect", () => {
+            const ms = Date.now() - start;
+            socket.destroy();
+            res.json({ status: "reachable", host, port, latencyMs: ms });
+        });
+        socket.on("timeout", () => {
+            socket.destroy();
+            res.status(504).json({ status: "unreachable", host, port, error: "TCP connection timed out (5s)" });
+        });
+        socket.on("error", (err) => {
+            res.status(500).json({ status: "unreachable", host, port, error: err.message });
+        });
+        socket.connect(port, host);
     });
     // Env check — see which variables are configured (no values exposed)
     app.get("/api/health/env", (_req, res) => {
