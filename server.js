@@ -43,7 +43,7 @@ loadEnvFile(path.join(__dirname, "backend", ".env.production"));
 loadEnvFile(path.join(__dirname, ".env"));
 
 // ── Constrain threads + memory for Hostinger shared hosting ────────
-// UV_THREADPOOL_SIZE=1 is safe because Prisma uses WASM engine (no native threads)
+// Prisma uses the JS driver engine; keep libuv small for Hostinger shared hosting.
 process.env.UV_THREADPOOL_SIZE = process.env.UV_THREADPOOL_SIZE || "1";
 process.env.NODE_OPTIONS = process.env.NODE_OPTIONS || "--max-old-space-size=512";
 process.env.NODE_ENV = "production";

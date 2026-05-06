@@ -14,18 +14,18 @@ function createPrismaClient() {
     try {
         // Parse mysql://user:pass@host:port/database URL
         const url = new URL(dbUrl.replace("mysql://", "http://"));
-        // PrismaMariaDb adapter accepts connection config directly
+        // Use Prisma's JS driver engine on Hostinger to avoid native Rust/Tokio threads.
         const adapter = new adapter_mariadb_1.PrismaMariaDb({
             host: url.hostname,
             port: parseInt(url.port || "3306"),
             user: decodeURIComponent(url.username),
             password: decodeURIComponent(url.password),
             database: url.pathname.slice(1),
-            connectionLimit: 5,
+            connectionLimit: 1,
             connectTimeout: 10000,
             acquireTimeout: 10000,
         });
-        console.log(`✅ Prisma using mariadb driver adapter → ${url.hostname}:${url.port}/${url.pathname.slice(1)}`);
+        console.log(`✅ Prisma using JS mariadb adapter → ${url.hostname}:${url.port}/${url.pathname.slice(1)}`);
         return new client_1.PrismaClient({ adapter });
     }
     catch (err) {
