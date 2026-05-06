@@ -5,6 +5,13 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+// Add connect_timeout to DATABASE_URL if not present
+const dbUrl = process.env.DATABASE_URL || "";
+if (dbUrl && !dbUrl.includes("connect_timeout")) {
+  const sep = dbUrl.includes("?") ? "&" : "?";
+  process.env.DATABASE_URL = `${dbUrl}${sep}connect_timeout=10&pool_timeout=10`;
+}
+
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
