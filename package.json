@@ -9,7 +9,7 @@
     "build": "cd backend && npm install && npm run build && cd ../frontend && npm install && npm run build",
     "build:frontend": "cd frontend && npm install && npm run build",
     "build:backend": "cd backend && npm install && npm run build",
-    "postinstall": "cd backend && npm install && cd ../frontend && npm install"
+    "postinstall": "cd backend && npm install && npx prisma generate && cd ../frontend && npm install"
   },
   "engines": {
     "node": ">=18.0.0"
