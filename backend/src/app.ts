@@ -11,6 +11,7 @@ import { promotionsRouter } from "./routes/promotions.js";
 import { reviewsRouter } from "./routes/reviews.js";
 import { merchantsRouter } from "./routes/merchants.js";
 import { analyticsRouter } from "./routes/analytics.js";
+import { prisma } from "./utils/db.js";
 
 type AppOptions = {
   serveRootInfo?: boolean;
@@ -95,6 +96,35 @@ export function createApp({ serveRootInfo = true }: AppOptions = {}) {
       service: "couponus-bd-api",
       version: "1.0.0",
       timestamp: new Date().toISOString(),
+      node: process.version,
+    });
+  });
+
+  // DB connection check — diagnose Hostinger database issues
+  app.get("/api/health/db", async (_req, res) => {
+    try {
+      await prisma.$queryRaw`SELECT 1 AS ok`;
+      res.json({ status: "connected", database: "ok" });
+    } catch (err: any) {
+      res.status(500).json({
+        status: "error",
+        database: "disconnected",
+        error: err.message,
+        code: err.code,
+        hint: "Check DATABASE_URL in Hostinger environment variables",
+      });
+    }
+  });
+
+  // Env check — see which variables are configured (no values exposed)
+  app.get("/api/health/env", (_req, res) => {
+    const dbUrl = process.env.DATABASE_URL || "";
+    res.json({
+      NODE_ENV: process.env.NODE_ENV || "(not set)",
+      DATABASE_URL: dbUrl ? `✅ set (${dbUrl.substring(0, 20)}...)` : "❌ NOT SET",
+      JWT_SECRET: process.env.JWT_SECRET ? "✅ set" : "❌ NOT SET",
+      FRONTEND_URL: process.env.FRONTEND_URL || "(not set)",
+      PORT: process.env.PORT || "(not set)",
     });
   });
 
